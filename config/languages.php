@@ -1,0 +1,27 @@
+<?php
+
+return [
+    ['name' => 'English', 'symbol' => 'English', 'iso_code' => 'en'],
+    ['name' => 'Assamese', 'symbol' => 'অসমীয়া', 'iso_code' => 'as'],
+    ['name' => 'Bengali', 'symbol' => 'বাংলা', 'iso_code' => 'bn'],
+    ['name' => 'Bodo', 'symbol' => 'बड़ो', 'iso_code' => 'brx'],
+    ['name' => 'Dogri', 'symbol' => 'डोगरी', 'iso_code' => 'doi'],
+    ['name' => 'Gujarati', 'symbol' => 'ગુજરાતી', 'iso_code' => 'gu'],
+    ['name' => 'Hindi', 'symbol' => 'हिंदी', 'iso_code' => 'hi'],
+    ['name' => 'Kannada', 'symbol' => 'ಕನ್ನಡ', 'iso_code' => 'kn'],
+    ['name' => 'Kashmiri', 'symbol' => 'کشمیری/कश्मीरी', 'iso_code' => 'ks'],
+    ['name' => 'Konkani', 'symbol' => 'कोंकणी', 'iso_code' => 'kok'],
+    ['name' => 'Maithili', 'symbol' => 'मैथिली', 'iso_code' => 'mai'],
+    ['name' => 'Malayalam', 'symbol' => 'മലയാളം', 'iso_code' => 'ml'],
+    ['name' => 'Manipuri (Meitei)', 'symbol' => 'ꯃꯩꯇꯩꯂꯣꯟ', 'iso_code' => 'mni'],
+    ['name' => 'Marathi', 'symbol' => 'मराठी', 'iso_code' => 'mr'],
+    ['name' => 'Nepali', 'symbol' => 'नेपाली', 'iso_code' => 'ne'],
+    ['name' => 'Odia', 'symbol' => 'ଓଡ଼ିଆ', 'iso_code' => 'or'],
+    ['name' => 'Punjabi', 'symbol' => 'ਪੰਜਾਬੀ', 'iso_code' => 'pa'],
+    ['name' => 'Sanskrit', 'symbol' => 'संस्कृत', 'iso_code' => 'sa'],
+    ['name' => 'Santali', 'symbol' => 'ᱥᱟᱱᱛᱟᱲᱤ', 'iso_code' => 'sat'],
+    ['name' => 'Sindhi', 'symbol' => 'سنڌي/सिंधी', 'iso_code' => 'sd'],
+    ['name' => 'Tamil', 'symbol' => 'தமிழ்', 'iso_code' => 'ta'],
+    ['name' => 'Telugu', 'symbol' => 'తెలుగు', 'iso_code' => 'te'],
+    ['name' => 'Urdu', 'symbol' => 'اردو', 'iso_code' => 'ur'],
+];

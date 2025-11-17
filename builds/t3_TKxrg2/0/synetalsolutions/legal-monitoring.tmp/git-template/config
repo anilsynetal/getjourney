@@ -1,0 +1,8 @@
+[init]
+	defaultBranch = none
+[fetch]
+	recurseSubmodules = false
+[transfer]
+	bundleURI = true
+[http "https://gitlab.com"]
+	sslCAInfo = /home/www/legal.synat.app/builds/t3_TKxrg2/0/synetalsolutions/legal-monitoring.tmp/CI_SERVER_TLS_CA_FILE
