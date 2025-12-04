@@ -120,9 +120,6 @@
                                     </div>
                                     <div class="mt-3 text-center choose-files">
                                         <label for="favicon_logo">
-                                            <div class="bg-primary company_logo_update"> <i
-                                                    class="px-1 ti ti-upload"></i>{{ __('translation.Choose file here') }}
-                                            </div>
                                             <input type="file" accept="image/*" class="form-control file"
                                                 id="favicon_logo" name="favicon_logo"
                                                 onchange="document.getElementById('app_favicon').src = window.URL.createObjectURL(this.files[0])"

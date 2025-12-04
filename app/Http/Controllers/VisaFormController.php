@@ -57,7 +57,7 @@ class VisaFormController extends Controller
                 'city' => 'required|string|max:150',
                 'visa_category_id' => 'required|exists:visa_categories,id',
                 'visa_form' => 'nullable|mimes:pdf|max:5120',
-                'application_form_url' => 'nullable|url|max:500',
+                'application_form_url' => 'nullable|url',
             ],
             [
                 'country_id.required' => __('translation.CountryIsRequired'),
@@ -140,7 +140,7 @@ class VisaFormController extends Controller
                 'city' => 'required|string|max:150',
                 'visa_category_id' => 'required|exists:visa_categories,id',
                 'visa_form' => 'nullable|mimes:pdf|max:5120',
-                'application_form_url' => 'nullable|url|max:500',
+                'application_form_url' => 'nullable|url',
             ],
             [
                 'country_id.required' => __('translation.CountryIsRequired'),

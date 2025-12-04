@@ -437,7 +437,7 @@ class UserController extends Controller
             $update->is_password_updated = 0;
             $update->save();
             Util::activityLog('Client', 'Password Updated', $update);
-            $response = ['status' => 'success', 'message' => __('translation.password_UpdatedSuccessfully')];
+            $response = ['status' => 'success', 'message' => __('translation.PasswordUpdatedSuccessfully')];
             $status_code = 200;
         } catch (\Throwable $th) {
             //Log error

@@ -707,4 +707,5 @@ return array(
     'Actions' => 'Actions',
     'VisaDetailInformation' => 'Visa Detail Information',
     'email_send_successfully' => 'Email send successfully',
+    'File' => 'File',
 );

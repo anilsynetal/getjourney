@@ -325,27 +325,80 @@ class WebsiteController extends Controller
         $international_help_addresses = [];
         $logistic_partners = [];
         $visa_categories = [];
+        $contact = Contact::first();
+
         if (request()->has('country_id')) {
+            $country_id = request()->country_id;
+
             $visa_details = VisaDetail::where('status', 1)
-                ->where('country_id', request()->country_id)
+                ->where('country_id', $country_id)
                 ->with(['country', 'visa_category', 'documents'])
                 ->get();
-            $visa_information = VisaInformation::where('country_id', request()->country_id)->first();
-            $visa_forms = VisaForm::where('country_id', request()->country_id, 'visa_category')->get();
+            $visa_information = VisaInformation::where('country_id', $country_id)->first();
+            $visa_forms = VisaForm::where('country_id', $country_id)->get();
 
-            $diplomatic_representations = DiplomaticRepresentation::where('country_id', request()->country_id)->get();
-            $international_help_addresses = InternationalHelpAddress::where('country_id', request()->country_id)->get();
+            $diplomatic_representations = DiplomaticRepresentation::where('country_id', $country_id)->get();
+            $international_help_addresses = InternationalHelpAddress::where('country_id', $country_id)->get();
 
-            $logistic_partners = LogisticPartner::where('country_id', request()->country_id)
+            $logistic_partners = LogisticPartner::where('country_id', $country_id)
                 ->where('status', 1)
                 ->get();
 
-            $visa_categories = VisaCategory::whereHas('visaDetails', function ($query) {
-                $query->where('status', 1);
+            $visa_categories = VisaCategory::whereHas('visaDetails', function ($query) use ($country_id) {
+                $query->where('status', 1)->where('country_id', $country_id);
             })->get();
         }
 
-        return view('website.visa-information', compact('visa_details', 'countries', 'visa_information', 'visa_forms', 'diplomatic_representations', 'international_help_addresses', 'logistic_partners', 'visa_categories'));
+        return view('website.visa-information', compact('visa_details', 'countries', 'visa_information', 'visa_forms', 'diplomatic_representations', 'international_help_addresses', 'logistic_partners', 'visa_categories', 'contact'));
+    }
+
+    // AJAX Filter for Visa Information
+    public function visa_information_filter(Request $request)
+    {
+        $country_id = $request->country_id;
+        $tab = $request->tab ?? 'factFinder';
+
+        $visa_details = VisaDetail::where('status', 1)
+            ->where('country_id', $country_id)
+            ->with(['country', 'visa_category', 'documents'])
+            ->get();
+
+        $visa_information = VisaInformation::where('country_id', $country_id)->first();
+        $visa_forms = VisaForm::where('country_id', $country_id)->get();
+        $diplomatic_representations = DiplomaticRepresentation::where('country_id', $country_id)->get();
+        $international_help_addresses = InternationalHelpAddress::where('country_id', $country_id)->get();
+        $logistic_partners = LogisticPartner::where('country_id', $country_id)
+            ->where('status', 1)
+            ->get();
+
+        $visa_categories = VisaCategory::whereHas('visaDetails', function ($query) use ($country_id) {
+            $query->where('status', 1)->where('country_id', $country_id);
+        })->get();
+
+        $contact = Contact::first();
+
+        // Return rendered HTML for each tab
+        $html = [
+            'leftMenu' => view('website.partials.visa-left-menu', compact('country_id', 'tab'))->render(),
+            'tabContent' => view('website.partials.visa-tab-content', compact(
+                'visa_information',
+                'visa_details',
+                'visa_categories',
+                'visa_forms',
+                'diplomatic_representations',
+                'international_help_addresses',
+                'logistic_partners',
+                'contact',
+                'tab'
+            ))->render(),
+        ];
+
+        return response()->json([
+            'status' => true,
+            'html' => $html,
+            'country_id' => $country_id,
+            'tab' => $tab
+        ]);
     }
 
     // Share Visa Information via Email

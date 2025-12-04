@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('visa_detail_id')->constrained('visa_details')->onDelete('cascade');
             $table->string('title', 255);
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->string('link', 500)->nullable();
             $table->boolean('status')->default(1);
 

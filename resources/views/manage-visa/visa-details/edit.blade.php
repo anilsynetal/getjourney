@@ -20,7 +20,8 @@
                         <h5 class="mb-0">@lang('translation.Edit') @lang('translation.VisaDetail')</h5>
                     </div>
                     <div class="card-body">
-                        <form name="master_form" method="post" action="{{ $route_action }}" novalidate>
+                        <form name="master_form" method="post" action="{{ $route_action }}" enctype="multipart/form-data"
+                            novalidate>
                             @csrf
                             @method('PUT')
                             <div class="row">
@@ -93,7 +94,7 @@
                                         <label for="processing_time" class="form-label">@lang('translation.ProcessingTime') :</label>
                                         <input type="text" class="form-control" id="processing_time"
                                             name="processing_time" placeholder="@lang('translation.EnterProcessingTime')"
-                                            value="{{ $result->processing_time }}" maxlength="255">
+                                            value="{{ $result->processing_time }}">
                                     </div>
                                 </div>
                             </div>
@@ -107,9 +108,9 @@
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>@lang('translation.Title')</th>
-                                                    <th>@lang('translation.Description')</th>
-                                                    <th>@lang('translation.Link')</th>
+                                                    <th>@lang('translation.Title') <span class="text-danger">*</span></th>
+                                                    <th>@lang('translation.Description') <small>(Optional)</small></th>
+                                                    <th>@lang('translation.File')</th>
                                                     <th>@lang('translation.Actions')</th>
                                                 </tr>
                                             </thead>
@@ -121,17 +122,26 @@
                                                             <td>
                                                                 <input type="text" class="form-control"
                                                                     name="document_title[]" placeholder="@lang('translation.EnterDocumentTitle')"
-                                                                    value="{{ $doc->title }}" maxlength="255">
+                                                                    value="{{ $doc->title }}">
                                                             </td>
                                                             <td>
-                                                                <textarea class="form-control" name="document_description[]" placeholder="@lang('translation.EnterDocumentDescription')" maxlength="255"
-                                                                    rows="3">{{ $doc->description }}</textarea>
+                                                                <textarea class="form-control" name="document_description[]" placeholder="@lang('translation.EnterDocumentDescription')" rows="3">{{ $doc->description }}</textarea>
                                                             </td>
                                                             <td>
-                                                                <input type="url" class="form-control"
-                                                                    name="document_link[]"
-                                                                    placeholder="@lang('translation.EnterDocumentLink')"
-                                                                    value="{{ $doc->link }}" maxlength="255">
+                                                                @if ($doc->file)
+                                                                    <div class="mb-2">
+                                                                        <a href="{{ asset('storage/' . $doc->file) }}"
+                                                                            target="_blank"
+                                                                            class="btn btn-sm btn-outline-info">
+                                                                            <i class="fas fa-file"></i> View Current File
+                                                                        </a>
+                                                                    </div>
+                                                                @endif
+                                                                <input type="file" class="form-control"
+                                                                    name="document_file[]"
+                                                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                                <small class="text-muted">Allowed: PDF, DOC, DOCX, JPG,
+                                                                    PNG</small>
                                                             </td>
                                                             <td>
                                                                 <button type="button"
@@ -144,17 +154,17 @@
                                                         <td>1</td>
                                                         <td>
                                                             <input type="text" class="form-control"
-                                                                name="document_title[]" placeholder="@lang('translation.EnterDocumentTitle')"
-                                                                maxlength="255">
+                                                                name="document_title[]" placeholder="@lang('translation.EnterDocumentTitle')">
                                                         </td>
                                                         <td>
-                                                            <textarea class="form-control" name="document_description[]" placeholder="@lang('translation.EnterDocumentDescription')" maxlength="255"
-                                                                rows="3"></textarea>
+                                                            <textarea class="form-control" name="document_description[]" placeholder="@lang('translation.EnterDocumentDescription')" rows="3"></textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="url" class="form-control"
-                                                                name="document_link[]" placeholder="@lang('translation.EnterDocumentLink')"
-                                                                maxlength="255">
+                                                            <input type="file" class="form-control"
+                                                                name="document_file[]"
+                                                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                            <small class="text-muted">Allowed: PDF, DOC, DOCX, JPG,
+                                                                PNG</small>
                                                         </td>
                                                         <td>
                                                             <button type="button"
@@ -198,9 +208,12 @@
             documentRow++;
             let newRow = `<tr data-row="${documentRow}">
                             <td>${documentRow}</td>
-                            <td><input type="text" class="form-control" name="document_title[]" placeholder="@lang('translation.EnterDocumentTitle')" maxlength="255"></td>
-                            <td><textarea class="form-control" name="document_description[]" placeholder="@lang('translation.EnterDocumentDescription')" maxlength="255" rows="3"></textarea></td>
-                            <td><input type="url" class="form-control" name="document_link[]" placeholder="@lang('translation.EnterDocumentLink')" maxlength="255"></td>
+                            <td><input type="text" class="form-control" name="document_title[]" placeholder="@lang('translation.EnterDocumentTitle')" ></td>
+                            <td><textarea class="form-control" name="document_description[]" placeholder="@lang('translation.EnterDocumentDescription')"  rows="3"></textarea></td>
+                            <td>
+                                <input type="file" class="form-control" name="document_file[]" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                <small class="text-muted">Allowed: PDF, DOC, DOCX, JPG, PNG</small>
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm remove-document-row">@lang('translation.Remove')</button>
                             </td>

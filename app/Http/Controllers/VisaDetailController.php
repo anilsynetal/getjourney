@@ -9,6 +9,7 @@ use App\Models\VisaCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Utils\Util;
@@ -94,15 +95,23 @@ class VisaDetailController extends Controller
             if ($request->has('document_title')) {
                 $titles = $request->document_title;
                 $descriptions = $request->document_description;
-                $links = $request->document_link;
+                $files = $request->file('document_file');
 
                 foreach ($titles as $index => $title) {
                     if (!empty($title)) {
                         $document = new VisaDetailDocument();
                         $document->visa_detail_id = $store->id;
                         $document->title = $title;
-                        $document->description = $descriptions[$index] ?? '';
-                        $document->link = $links[$index] ?? null;
+                        $document->description = $descriptions[$index] ?? null;
+
+                        // Handle file upload
+                        if (isset($files[$index]) && $files[$index]->isValid()) {
+                            $file = $files[$index];
+                            $fileName = time() . '_' . $index . '_' . $file->getClientOriginalName();
+                            $filePath = $file->storeAs('uploads/visa_documents', $fileName, 'public');
+                            $document->file = $filePath;
+                        }
+
                         $document->created_by = Auth::user()->id;
                         $document->created_by_ip = $request->ip();
                         $document->save();
@@ -190,19 +199,35 @@ class VisaDetailController extends Controller
             $update->updated_by = Auth::user()->id;
             $update->updated_by_ip = $request->ip();
             $update->save();
+            // Delete old documents and their files
+            $oldDocuments = $update->documents;
+            foreach ($oldDocuments as $oldDoc) {
+                if ($oldDoc->file && Storage::disk('public')->exists($oldDoc->file)) {
+                    Storage::disk('public')->delete($oldDoc->file);
+                }
+            }
             $update->documents()->delete();
+
             if ($request->has('document_title')) {
                 $titles = $request->document_title;
                 $descriptions = $request->document_description;
-                $links = $request->document_link;
+                $files = $request->file('document_file');
 
                 foreach ($titles as $index => $title) {
                     if (!empty($title)) {
                         $document = new VisaDetailDocument();
                         $document->visa_detail_id = $update->id;
                         $document->title = $title;
-                        $document->description = $descriptions[$index] ?? '';
-                        $document->link = $links[$index] ?? null;
+                        $document->description = $descriptions[$index] ?? null;
+
+                        // Handle file upload
+                        if (isset($files[$index]) && $files[$index]->isValid()) {
+                            $file = $files[$index];
+                            $fileName = time() . '_' . $index . '_' . $file->getClientOriginalName();
+                            $filePath = $file->storeAs('uploads/visa_documents', $fileName, 'public');
+                            $document->file = $filePath;
+                        }
+
                         $document->created_by = Auth::user()->id;
                         $document->created_by_ip = $request->ip();
                         $document->save();
@@ -235,6 +260,13 @@ class VisaDetailController extends Controller
             $delete = VisaDetail::find($id);
             if (!$delete) {
                 return response()->json(['status' => 'error', 'message' => __('translation.RecordNotFound')], 404);
+            }
+
+            // Delete associated document files
+            foreach ($delete->documents as $document) {
+                if ($document->file && Storage::disk('public')->exists($document->file)) {
+                    Storage::disk('public')->delete($document->file);
+                }
             }
 
             Util::activityLog('VisaDetail', 'Deleted', $delete);

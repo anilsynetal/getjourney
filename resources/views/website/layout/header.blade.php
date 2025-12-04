@@ -45,9 +45,10 @@
  <!-- Navbar & Hero Start -->
  <div class="container-fluid nav-bar p-0">
      <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
-         <a href="" class="navbar-brand p-0">
-             <h1 class="display-5 text-secondary m-0"><img src="{{ asset('website/assets/img/brand-logo.png') }}"
-                     class="img-fluid" alt=""></h1>
+         <a href="{{ route('website.index') }}" class="navbar-brand p-0">
+             <h1 class="display-5 text-secondary m-0">
+                 <img src="{{ asset('website/assets/img/brand-logo.png') }}" class="img-fluid" alt="Logo">
+             </h1>
              <!-- <img src="img/logo.png" alt="Logo"> -->
          </a>
          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -55,13 +56,20 @@
          </button>
          <div class="collapse navbar-collapse" id="navbarCollapse">
              <div class="navbar-nav ms-auto py-0">
-                 <a href="{{ route('website.index') }}" class="nav-item nav-link active">Home</a>
-                 <a href="{{ route('website.about') }}" class="nav-item nav-link">About</a>
-                 <a href="{{ route('website.services') }}" class="nav-item nav-link">Services</a>
-                 <a href="{{ route('website.tours') }}" class="nav-item nav-link">Tours</a>
-                 <a href="{{ route('website.visa-information') }}" class="nav-item nav-link">Visa Information</a>
+                 <a href="{{ route('website.index') }}"
+                     class="nav-item nav-link {{ request()->routeIs('website.index') ? 'active' : '' }}">Home</a>
+                 <a href="{{ route('website.about') }}"
+                     class="nav-item nav-link {{ request()->routeIs('website.about') ? 'active' : '' }}">About</a>
+                 <a href="{{ route('website.services') }}"
+                     class="nav-item nav-link {{ request()->routeIs('website.services') ? 'active' : '' }}">Services</a>
+                 <a href="{{ route('website.tours') }}"
+                     class="nav-item nav-link {{ request()->routeIs('website.tours') ? 'active' : '' }}">Tours</a>
+                 <a href="{{ route('website.visa-information') }}"
+                     class="nav-item nav-link {{ request()->routeIs('website.visa-information') ? 'active' : '' }}">Visa
+                     Information</a>
                  <div class="nav-item dropdown">
-                     <a href="{{ route('website.blogs') }}" class="nav-link"><span
+                     <a href="{{ route('website.blogs') }}"
+                         class="nav-link {{ request()->routeIs('website.blogs') ? 'active' : '' }}"><span
                              class="dropdown-toggle">Blogs</span></a>
                      <div class="dropdown-menu m-0">
                          @foreach ($blog_categories as $category)
@@ -70,7 +78,8 @@
                          @endforeach
                      </div>
                  </div>
-                 <a href="{{ route('website.contact') }}" class="nav-item nav-link">Contact</a>
+                 <a href="{{ route('website.contact') }}"
+                     class="nav-item nav-link {{ request()->routeIs('website.contact') ? 'active' : '' }}">Contact</a>
              </div>
              {{-- <button class="btn btn-primary btn-md-square border-secondary mb-3 mb-md-3 mb-lg-0 me-3"
                  data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></button>

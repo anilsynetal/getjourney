@@ -327,5 +327,6 @@ Route::post('newsletter/subscribe', [WebsiteController::class, 'subscribe_newsle
 
 //Visa information routes
 Route::get('/visa-information', [WebsiteController::class, 'visa_information'])->name('website.visa-information');
+Route::post('/visa-information/filter', [WebsiteController::class, 'visa_information_filter'])->name('website.visa-information.filter');
 Route::post('/visa-information/share', [WebsiteController::class, 'share_visa_info'])->name('website.share-visa-info');
 Route::post('/visa-information/download-pdf', [WebsiteController::class, 'download_visa_pdf'])->name('website.download-visa-pdf');

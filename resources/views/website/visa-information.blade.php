@@ -19,30 +19,49 @@
 
 
         <!-- Visa Information Start -->
-        <div class="container-fluid overflow-hidden py-5">
+        <div class="container-fluid bg-light overflow-hidden py-5 vinfo">
             <div class="container py-5">
 
                 <!-- Country Search Dropdown -->
                 <div class="row mb-4">
-                    <div class="col-lg-8 mx-auto text-center">
-                        <form method="GET" action="{{ route('website.visa-information') }}">
-                            <select class="form-control selectpicker" data-live-search="true" name="country_id"
-                                onchange="this.form.submit()">
-                                <option selected disabled>Search Country</option>
-                                @foreach ($countries as $country)
-                                    <option value="{{ $country->id }}"
-                                        {{ request()->country_id == $country->id ? 'selected' : '' }}>
-                                        {{ $country->country }}</option>
-                                @endforeach
-                            </select>
-                        </form>
+                    <div class="col-lg-10 mx-auto">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="card-body p-4 p-md-5">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-md-5">
+                                        <h5 class="mb-1" style="color:#003366; font-weight:700;">Search Visa by Country
+                                        </h5>
+                                        <p class="mb-0 text-muted" style="font-size:0.95rem;">Select a country to view
+                                            requirements, fees and forms.</p>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="input-group input-group-lg">
+                                            <span class="input-group-text bg-white border-end-0"><i
+                                                    class="fas fa-search text-muted"></i></span>
+                                            <select class="form-control selectpicker border-start-0" data-live-search="true"
+                                                data-live-search-placeholder="Search country..." data-size="7"
+                                                data-style="btn-lg bg-white border-start-0" data-container="body"
+                                                name="country_id" id="countrySelect" title="Search country...">
+
+                                                @foreach ($countries as $country)
+                                                    <option value="{{ $country->id }}">
+                                                        {{ $country->country }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                @if (!request()->has('country_id'))
+
+                <!-- Initial Instructions (shown when no country selected) -->
+                <div id="initialInstructions" style="display: {{ !request()->has('country_id') ? 'block' : 'none' }};">
                     <div class="row">
                         <div class="col">
-                            <div class="card text-center p-4">
-                                <div class="card-body">
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center">
+                                <div class="card-body p-4">
                                     <h5 class="card-title">Apply Visa Online In 3 Simple Steps</h5>
                                     <p class="card-text">We Take Care Of Your Online Visa Application</p>
                                 </div>
@@ -51,8 +70,8 @@
                     </div>
                     <div class="row g-4 mt-2">
                         <div class="col-md-4">
-                            <div class="card text-center p-4">
-                                <div class="card-body">
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 text-center">
+                                <div class="card-body p-4">
                                     <img src="{{ asset('website/assets/img/searchcountry.png') }}" alt="Step 1"
                                         class="mb-3">
                                     <h6 class="card-title">Search the Country</h6>
@@ -60,8 +79,8 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card text-center p-4">
-                                <div class="card-body">
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 text-center">
+                                <div class="card-body p-4">
                                     <img src="{{ asset('website/assets/img/readvisainfo.png') }}" alt="Step 2"
                                         class="mb-3">
                                     <h6 class="card-title">Read Visa Information</h6>
@@ -69,554 +88,46 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card text-center p-4">
-                                <div class="card-body">
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 text-center">
+                                <div class="card-body p-4">
                                     <img src="{{ asset('website/assets/img/dwndvisa.png') }}" alt="Step 3" class="mb-3">
                                     <h6 class="card-title">Download Visa Forms</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @else
-                    <div class="row g-4">
+                </div>
 
-                        <!-- LEFT MENU -->
-                        <div class="col-lg-3">
-                            <div class="list-group">
-                                @if ($visa_information)
-                                    <a class="list-group-item list-group-item-action {{ request()->tab == 'factFinder' || !request()->has('tab') ? 'active' : '' }}"
-                                        href="{{ route('website.visa-information', ['country_id' => request()->country_id, 'tab' => 'factFinder']) }}">Country
-                                        Fact Finder</a>
-                                @endif
-                                @if ($visa_details->count() > 0)
-                                    <a class="list-group-item list-group-item-action {{ request()->tab == 'visaNotes' ? 'active' : '' }}"
-                                        href="{{ route('website.visa-information', ['country_id' => request()->country_id, 'tab' => 'visaNotes']) }}">Visa
-                                        Notes & Fees</a>
-                                @endif
-                                @if ($visa_forms->count() > 0)
-                                    <a class="list-group-item list-group-item-action {{ request()->tab == 'visaForms' ? 'active' : '' }}"
-                                        href="{{ route('website.visa-information', ['country_id' => request()->country_id, 'tab' => 'visaForms']) }}">Download
-                                        Visa Forms</a>
-                                @endif
-                                @if ($diplomatic_representations->count() > 0)
-                                    <a class="list-group-item list-group-item-action {{ request()->tab == 'diplomatic' ? 'active' : '' }}"
-                                        href="{{ route('website.visa-information', ['country_id' => request()->country_id, 'tab' => 'diplomatic']) }}">Diplomatic
-                                        Representation</a>
-                                @endif
-                                @if ($international_help_addresses->count() > 0)
-                                    <a class="list-group-item list-group-item-action {{ request()->tab == 'helpAddress' ? 'active' : '' }}"
-                                        href="{{ route('website.visa-information', ['country_id' => request()->country_id, 'tab' => 'helpAddress']) }}">International
-                                        Help Address</a>
-                                @endif
-                                @if ($logistic_partners->count() > 0)
-                                    <a class="list-group-item list-group-item-action {{ request()->tab == 'logistic' ? 'active' : '' }}"
-                                        href="{{ route('website.visa-information', ['country_id' => request()->country_id, 'tab' => 'logistic']) }}">Logistic
-                                        Partner</a>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- RIGHT CONTENT -->
-                        <div class="col-lg-9 ps-lg-4">
-
-                            <div class="tab-content">
-
-                                <!-- 1. Country Fact Finder -->
-                                <div class="tab-pane fade show {{ request()->tab == 'factFinder' || !request()->has('tab') ? 'active' : '' }}"
-                                    id="factFinder">
-                                    <div class="card p-4">
-                                        <h3 class="mb-3">
-                                            {{ $visa_information ? $visa_information->country->country : 'Country' }} –
-                                            General Information</h3>
-                                        <p>
-                                            {{ $visa_information ? $visa_information->description : 'General information about the country will be displayed here.' }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- 2. Visa Notes & Fees -->
-                                <div class="tab-pane fade {{ request()->tab == 'visaNotes' ? 'show active' : '' }}"
-                                    id="visaNotes">
-                                    <div class="card p-4">
-                                        <h3 class="mb-3">
-                                            {{ $visa_information ? $visa_information->country->country : 'Country' }} –
-                                            Visa Notes & Fees
-                                        </h3>
-
-                                        @if ($visa_details->count() > 0)
-
-                                            <!-- Category Tabs -->
-                                            <ul class="nav nav-tabs mb-3">
-                                                @foreach ($visa_categories as $index => $category)
-                                                    <li class="nav-item">
-                                                        <a class="nav-link {{ $index == 0 ? 'active' : '' }}"
-                                                            data-bs-toggle="tab" href="#categoryTab{{ $category->id }}">
-                                                            {{ $category->name }}
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-
-                                            <!-- Category Tab Content -->
-                                            <div class="tab-content">
-
-                                                @foreach ($visa_categories as $index => $category)
-                                                    <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}"
-                                                        id="categoryTab{{ $category->id }}">
-
-                                                        <!-- Accordion for this category only -->
-                                                        <div class="accordion" id="accordionCategory{{ $category->id }}">
-                                                            @foreach ($visa_details->where('visa_category_id', $category->id) as $detail)
-                                                                <div class="accordion-item">
-                                                                    <h2 class="accordion-header"
-                                                                        id="heading{{ $detail->id }}">
-                                                                        <button class="accordion-button collapsed"
-                                                                            type="button" data-bs-toggle="collapse"
-                                                                            data-bs-target="#collapse{{ $detail->id }}"
-                                                                            aria-expanded="false"
-                                                                            aria-controls="collapse{{ $detail->id }}">
-                                                                            {{ $detail->city }}
-                                                                        </button>
-                                                                    </h2>
-
-                                                                    <div id="collapse{{ $detail->id }}"
-                                                                        class="accordion-collapse collapse"
-                                                                        aria-labelledby="heading{{ $detail->id }}"
-                                                                        data-bs-parent="#accordionCategory{{ $category->id }}">
-
-                                                                        <div class="accordion-body visa-body">
-
-                                                                            <strong>Visa Fees:</strong>
-                                                                            {!! $detail->visa_fees !!}<br>
-                                                                            <strong>Logistic Fees:</strong>
-                                                                            {!! $detail->logistic_charges !!}<br><br>
-                                                                            <strong>Processing Time:</strong>
-                                                                            {!! $detail->processing_time !!}<br><br>
-
-                                                                            <h5 class="mt-4 mb-3">Mandatory Documents</h5>
-
-                                                                            @foreach ($detail->documents as $document)
-                                                                                <div
-                                                                                    class="d-flex gap-3 mb-3 align-items-start">
-                                                                                    <div
-                                                                                        style="background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-                                                                color: #fff;
-                                                                border-radius: 50%;
-                                                                width: 28px;
-                                                                height: 28px;
-                                                                display: flex;
-                                                                align-items: center;
-                                                                justify-content: center;
-                                                                flex-shrink: 0;
-                                                                font-weight: bold;
-                                                                box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);">
-                                                                                        <i class="fas fa-check"
-                                                                                            style="font-size: 0.9rem;"></i>
-                                                                                    </div>
-
-                                                                                    <div style="padding-top: 2px;">
-                                                                                        <strong
-                                                                                            style="color: #003366; font-size: 0.95rem;">{{ $document->title }}:</strong>
-                                                                                        <div
-                                                                                            style="color: #555; font-size: 0.9rem; margin-top: 2px;">
-                                                                                            @if ($document->link)
-                                                                                                <a href="{{ $document->link }}"
-                                                                                                    target="_blank"
-                                                                                                    style="color: #003366; text-decoration: none; border-bottom: 1px solid #003366;">
-                                                                                                    {{ $document->description }}
-                                                                                                </a>
-                                                                                            @else
-                                                                                                {{ $document->description }}
-                                                                                            @endif
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                            <!-- Share Info -->
-                                                                            <div class="mt-3 share-info-container"
-                                                                                data-country="{{ json_encode($visa_information->country) }}"
-                                                                                data-visacategory="{{ $category->name }}"
-                                                                                data-city="{{ $detail->city }}">
-                                                                                <button class="btn btn-link p-0"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#shareModal">
-                                                                                    <i class="fas fa-share-alt me-2"
-                                                                                        style="color:#d32f2f;"></i>
-                                                                                    Share Information via Email
-                                                                                </button>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-
-                                            </div>
-                                        @else
-                                            <p>No visa details available.</p>
-                                        @endif
-                                    </div>
-                                </div>
-
-
-                                <!-- 3. Download Visa Forms -->
-                                <div class="tab-pane fade {{ request()->tab == 'visaForms' ? 'show active' : '' }}"
-                                    id="visaForms">
-                                    <div class="card p-4">
-                                        <h4>{{ $visa_information ? $visa_information->country->country : 'Country' }} –
-                                            Download Visa Forms</h4>
-                                        <ul class="list-group">
-                                            @foreach ($visa_forms as $form)
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    {{ $form->city }} - {{ $form->visa_category->name }}
-                                                    @if ($form->visa_form)
-                                                        <a href="{{ asset('storage/visa_forms/' . $form->visa_form) }}"
-                                                            class="btn btn-primary btn-sm" target="_blank">VISA
-                                                            APPLICATION FORM</a>
-                                                    @endif
-                                                    @if ($form->application_form_url)
-                                                        <a href="{{ $form->application_form_url }}"
-                                                            class="btn btn-success btn-sm" target="_blank">APPLICATION
-                                                            FORM LINK</a>
-                                                    @endif
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <!-- 4. Diplomatic Representation -->
-                                <div class="tab-pane fade {{ request()->tab == 'diplomatic' ? 'show active' : '' }}"
-                                    id="diplomatic">
-                                    <div class="card p-4">
-                                        <h4>{{ $visa_information ? $visa_information->country->country : 'Country' }} –
-                                            Diplomatic Representation</h4>
-                                        @if ($diplomatic_representations->count() > 0)
-                                            <div class="space-y-3">
-                                                @foreach ($diplomatic_representations as $rep)
-                                                    <div class="card border-0 shadow-sm"
-                                                        style="background-color: #f8f9fa;">
-                                                        <div class="card-body p-4">
-                                                            <div class="row align-items-start">
-                                                                <!-- City Badge -->
-                                                                <div class="col-auto">
-                                                                    <div
-                                                                        style="background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-                                                                            border-radius: 20px;
-                                                                            padding: 8px 16px;
-                                                                            color: white;
-                                                                            font-weight: 600;
-                                                                            white-space: nowrap;">
-                                                                        {{ $rep->city }}
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Office Info -->
-                                                                <div class="col m-auto">
-                                                                    <h5
-                                                                        style="color: #003366; font-weight: 700; margin: 0;">
-                                                                        {{ $rep->office_name }}
-                                                                    </h5>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Address -->
-                                                            <div class="row mt-3 mb-3">
-                                                                <div class="col">
-                                                                    <p class="mb-0"
-                                                                        style="color: #666; font-size: 0.95rem;">
-                                                                        <i class="fas fa-map-pin"
-                                                                            style="color: #d32f2f; margin-right: 8px;"></i>
-                                                                        {{ $rep->address }}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Contact Details Row -->
-                                                            <div class="row g-3 mb-3">
-                                                                <!-- Phone Numbers -->
-                                                                <div class="col-auto">
-                                                                    <div style="display: flex; gap: 8px;">
-                                                                        @if ($rep->contact_number1)
-                                                                            <a href="tel:{{ $rep->contact_number1 }}"
-                                                                                class="text-decoration-none"
-                                                                                style="color: #003366; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                                <i class="fas fa-phone"
-                                                                                    style="color: #d32f2f;"></i>
-                                                                                {{ $rep->contact_number1 }}
-                                                                            </a>
-                                                                        @endif
-                                                                        @if ($rep->contact_number2)
-                                                                            <span style="color: #ccc;">|</span>
-                                                                            <a href="tel:{{ $rep->contact_number2 }}"
-                                                                                class="text-decoration-none"
-                                                                                style="color: #003366; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                                <i class="fas fa-phone"
-                                                                                    style="color: #d32f2f;"></i>
-                                                                                {{ $rep->contact_number2 }}
-                                                                            </a>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Fax -->
-                                                                @if ($rep->fax_number)
-                                                                    <div class="col-auto">
-                                                                        <span
-                                                                            style="color: #666; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                            <i class="fas fa-fax"
-                                                                                style="color: #d32f2f;"></i>
-                                                                            {{ $rep->fax_number }}
-                                                                        </span>
-                                                                    </div>
-                                                                @endif
-
-                                                                <!-- Email -->
-                                                                @if ($rep->email)
-                                                                    <div class="col-auto">
-                                                                        <a href="javascript:void(0);"
-                                                                            class="text-decoration-none"
-                                                                            style="color: #003366; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                            <i class="fas fa-envelope"
-                                                                                style="color: #d32f2f;"></i>
-                                                                            {{ $rep->email }}
-                                                                        </a>
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-
-                                                            <!-- Opening Hours -->
-                                                            @php
-                                                                $opening_hours =
-                                                                    json_decode($rep->opening_hours, true) ?? [];
-                                                            @endphp
-                                                            @if (count(array_filter($opening_hours)) > 0)
-                                                                <div class="row g-2">
-                                                                    <div class="col-12">
-                                                                        <p class="mb-2"
-                                                                            style="font-size: 0.85rem; color: #666; font-weight: 600;">
-                                                                            <i class="fas fa-clock"
-                                                                                style="color: #d32f2f;"></i> Hours : Open ·
-                                                                            Closes
-                                                                        </p>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <div
-                                                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; font-size: 0.85rem;">
-                                                                            @foreach (['monday' => 'Monday', 'tuesday' => 'Tuesday', 'wednesday' => 'Wednesday', 'thursday' => 'Thursday', 'friday' => 'Friday', 'saturday' => 'Saturday', 'sunday' => 'Sunday'] as $day => $fullDay)
-                                                                                @if (!empty($opening_hours[$day]))
-                                                                                    <div
-                                                                                        style="border-right: 1px solid #ddd; ">
-                                                                                        <div
-                                                                                            style="color: #003366; font-weight: 600;">
-                                                                                            {{ $fullDay }}</div>
-                                                                                        <div style="color: #666;">
-                                                                                            {{ $opening_hours[$day] }}
-                                                                                        </div>
-                                                                                    </div>
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <div class="alert alert-info">
-                                                <i class="fas fa-info-circle me-2"></i> No diplomatic representation
-                                                information available.
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- 5. International Help Address -->
-                                <div class="tab-pane fade {{ request()->tab == 'helpAddress' ? 'show active' : '' }}"
-                                    id="helpAddress">
-                                    <div class="card p-4">
-                                        @if ($international_help_addresses->count() == 0)
-                                            <div class="alert alert-info">
-                                                <i class="fas fa-info-circle me-2"></i> No international help address
-                                                information available.
-                                            </div>
-                                        @else
-                                            @if ($visa_information)
-                                                <h4 class="mb-3">{{ $visa_information->country->country }} –
-                                                    International Help
-                                                    Contacts</h4>
-                                            @endif
-                                            <ol class="list-group-numbered mt-3">
-                                                @foreach ($international_help_addresses as $help)
-                                                    <li>
-                                                        <a href="{{ $help->link }}" target="_blank">
-                                                            <u>{{ $help->title }}</u>
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ol>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- 6. Logistic Partner -->
-                                <div class="tab-pane fade {{ request()->tab == 'logistic' ? 'show active' : '' }}"
-                                    id="logistic">
-                                    <div class="card p-4">
-                                        <h4>{{ $visa_information ? $visa_information->country->country : 'Country' }} –
-                                            Logistic Partner</h4>
-                                        @if ($logistic_partners->count() > 0)
-                                            <div class="space-y-3">
-                                                @foreach ($logistic_partners as $logistic)
-                                                    <div class="card border-0 shadow-sm"
-                                                        style="background-color: #f8f9fa;">
-                                                        <div class="card-body p-4">
-                                                            <div class="row align-items-start">
-                                                                <!-- City Badge -->
-                                                                <div class="col-auto">
-                                                                    <div
-                                                                        style="background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-                                                                            border-radius: 20px;
-                                                                            padding: 8px 16px;
-                                                                            color: white;
-                                                                            font-weight: 600;
-                                                                            white-space: nowrap;">
-                                                                        {{ $logistic->city }}
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Office Info -->
-                                                                <div class="col m-auto">
-                                                                    <h5
-                                                                        style="color: #003366; font-weight: 700; margin: 0;">
-                                                                        {{ $logistic->office_name }}
-                                                                    </h5>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Address -->
-                                                            <div class="row mt-3 mb-3">
-                                                                <div class="col">
-                                                                    <p class="mb-0"
-                                                                        style="color: #666; font-size: 0.95rem;">
-                                                                        <i class="fas fa-map-pin"
-                                                                            style="color: #d32f2f; margin-right: 8px;"></i>
-                                                                        {{ $logistic->address }}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Contact Details Row -->
-                                                            <div class="row g-3 mb-3">
-                                                                <!-- Phone Numbers -->
-                                                                <div class="col-auto">
-                                                                    <div style="display: flex; gap: 8px;">
-                                                                        @if ($logistic->contact_number)
-                                                                            <a href="tel:{{ $logistic->contact_number }}"
-                                                                                class="text-decoration-none"
-                                                                                style="color: #003366; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                                <i class="fas fa-phone"
-                                                                                    style="color: #d32f2f;"></i>
-                                                                                {{ $logistic->contact_number }}
-                                                                            </a>
-                                                                        @endif
-                                                                        @if ($logistic->website)
-                                                                            <span style="color: #ccc;">|</span>
-                                                                            <a href="tel:{{ $logistic->website }}"
-                                                                                class="text-decoration-none"
-                                                                                style="color: #003366; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                                <i class="fas fa-phone"
-                                                                                    style="color: #d32f2f;"></i>
-                                                                                {{ $logistic->website }}
-                                                                            </a>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Fax -->
-                                                                @if ($logistic->fax_number)
-                                                                    <div class="col-auto">
-                                                                        <span
-                                                                            style="color: #666; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                            <i class="fas fa-fax"
-                                                                                style="color: #d32f2f;"></i>
-                                                                            {{ $logistic->fax_number }}
-                                                                        </span>
-                                                                    </div>
-                                                                @endif
-
-                                                                <!-- Email -->
-                                                                @if ($logistic->email)
-                                                                    <div class="col-auto">
-                                                                        <a href="javascript:void(0);"
-                                                                            class="text-decoration-none"
-                                                                            style="color: #003366; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
-                                                                            <i class="fas fa-envelope"
-                                                                                style="color: #d32f2f;"></i>
-                                                                            {{ $logistic->email }}
-                                                                        </a>
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-
-                                                            <!-- Opening Hours -->
-                                                            @php
-                                                                $opening_hours =
-                                                                    json_decode($logistic->opening_hours, true) ?? [];
-                                                            @endphp
-                                                            @if (count(array_filter($opening_hours)) > 0)
-                                                                <div class="row g-2">
-                                                                    <div class="col-12">
-                                                                        <p class="mb-2"
-                                                                            style="font-size: 0.85rem; color: #666; font-weight: 600;">
-                                                                            <i class="fas fa-clock"
-                                                                                style="color: #d32f2f;"></i> Hours : Open ·
-                                                                            Closes
-                                                                        </p>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <div
-                                                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; font-size: 0.85rem;">
-                                                                            @foreach (['monday' => 'Monday', 'tuesday' => 'Tuesday', 'wednesday' => 'Wednesday', 'thursday' => 'Thursday', 'friday' => 'Friday', 'saturday' => 'Saturday', 'sunday' => 'Sunday'] as $day => $fullDay)
-                                                                                @if (!empty($opening_hours[$day]))
-                                                                                    <div
-                                                                                        style="border-right: 1px solid #ddd; ">
-                                                                                        <div
-                                                                                            style="color: #003366; font-weight: 600;">
-                                                                                            {{ $fullDay }}</div>
-                                                                                        <div style="color: #666;">
-                                                                                            {{ $opening_hours[$day] }}
-                                                                                        </div>
-                                                                                    </div>
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <div class="alert alert-info">
-                                                <i class="fas fa-info-circle me-2"></i> No diplomatic representation
-                                                information available.
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
+                <!-- Visa Content Area (shown when country is selected) -->
+                <div id="visaContentArea" class="row g-4"
+                    style="display: {{ request()->has('country_id') ? 'flex' : 'none' }};">
+                    <!-- LEFT MENU -->
+                    <div class="col-lg-3" id="leftMenuContainer">
+                        @if (request()->has('country_id'))
+                            @include('website.partials.visa-left-menu', [
+                                'country_id' => request()->country_id,
+                                'tab' => request()->tab ?? 'factFinder',
+                            ])
+                        @endif
                     </div>
-                @endif
+
+                    <!-- RIGHT CONTENT -->
+                    <div class="col-lg-9 ps-lg-4" id="tabContentContainer">
+                        @if (request()->has('country_id'))
+                            @include('website.partials.visa-tab-content', [
+                                'visa_information' => $visa_information,
+                                'visa_details' => $visa_details,
+                                'visa_categories' => $visa_categories,
+                                'visa_forms' => $visa_forms,
+                                'diplomatic_representations' => $diplomatic_representations,
+                                'international_help_addresses' => $international_help_addresses,
+                                'logistic_partners' => $logistic_partners,
+                                'contact' => $contact,
+                                'tab' => request()->tab ?? 'factFinder',
+                            ])
+                        @endif
+                    </div>
+                </div>
             </div>
 
 
@@ -624,7 +135,6 @@
         <!-- Visa Information End -->
 
     </main>
-
     <!-- Share Information Modal -->
     <div class="modal fade" id="shareModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -658,8 +168,7 @@
 
                     <p style="color: #d32f2f; font-size: 0.9rem; margin-bottom: 20px;">
                         <i class="fab fa-whatsapp" style="color: #25D366; font-size: 1.1rem;"></i>
-                        <strong>Click on</strong> <i class="fab fa-whatsapp"
-                            style="color: #25D366; font-size: 1.1rem;"></i>
+                        <strong>Click on</strong> <i class="fab fa-whatsapp" style="color: #25D366; font-size: 1.1rem;"></i>
                         <strong>icon to send downloaded checklist pdf via whatsapp.</strong>
                     </p>
 
@@ -760,6 +269,237 @@
 @section('styles')
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css" />
+    <style>
+        /* Subtle hover for cards on this page only */
+        .vinfo .card.border-0.shadow-sm.rounded-4 {
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .vinfo .card.border-0.shadow-sm.rounded-4:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, .08) !important;
+        }
+
+        /* Align bootstrap-select inside input-group */
+        .vinfo .input-group .bootstrap-select>.dropdown-toggle {
+            border-left: 0;
+            border-color: #ced4da;
+            height: 100%;
+        }
+
+        .vinfo .input-group-text+.bootstrap-select>.dropdown-toggle {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .vinfo .bootstrap-select .dropdown-menu {
+            z-index: 2200 !important;
+            /* above input-group adornments */
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .vinfo .bootstrap-select .bs-searchbox .form-control {
+            border-radius: .5rem;
+        }
+
+        /* Ensure full width within input-group */
+        .vinfo .input-group .bootstrap-select {
+            flex: 1 1 auto;
+        }
+
+        /* Ensure dropdown overlays input-group icon even when appended to body */
+        .bs-container .dropdown-menu {
+            z-index: 2200 !important;
+        }
+
+        .bootstrap-select .dropdown-menu {
+            z-index: 2200 !important;
+        }
+
+        /* Make the leading icon non-interactive so clicks reach the select */
+        .vinfo .input-group-text {
+            pointer-events: none;
+        }
+
+        /* Enhanced Visa Category Tabs Styling */
+        .visa-category-tabs {
+            border-bottom: none !important;
+            padding: 0;
+        }
+
+        .visa-category-tabs .nav-link {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #dee2e6;
+            color: #495057;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: capitalize;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .visa-category-tabs .nav-link:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            border-color: #adb5bd;
+            color: #212529;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .visa-category-tabs .nav-link.active {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            border-color: #d32f2f;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .visa-category-tabs .nav-link.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+        }
+
+        .visa-category-tabs .nav-link i {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .visa-category-tabs .nav-link.active i {
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments for tabs */
+        @media (max-width: 768px) {
+            .visa-category-tabs .nav-link {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+
+            .visa-category-tabs {
+                gap: 8px !important;
+            }
+        }
+
+        /* Tab content animation */
+        .tab-content>.tab-pane {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        /* Fix blank space in category tab content */
+        .category-tab-content {
+            overflow: hidden;
+        }
+
+        .category-tab-content>.tab-pane {
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Remove transition delays that cause blank space */
+        .category-tab-content>.tab-pane.fade {
+            transition: opacity 0.15s linear;
+        }
+
+        .category-tab-content>.tab-pane.fade:not(.show) {
+            display: none;
+        }
+
+        .category-tab-content>.tab-pane.fade.show {
+            display: block;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhance accordion styling within tabs */
+        #visaNotes .accordion-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        #visaNotes .accordion-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        #visaNotes .accordion-button {
+            background-color: #f8f9fa;
+            color: #003366;
+            font-weight: 600;
+            padding: 16px 20px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        #visaNotes .accordion-button:not(.collapsed) {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: #ffffff;
+            box-shadow: none;
+        }
+
+        #visaNotes .accordion-button:focus {
+            box-shadow: none;
+            border-color: transparent;
+        }
+
+        #visaNotes .accordion-button::after {
+            transition: transform 0.3s ease;
+        }
+
+        #visaNotes .accordion-body {
+            padding: 24px;
+            background-color: #ffffff;
+        }
+
+        .btn-outline-primary:hover {
+            color: #fff !important;
+            background-color: #053651;
+            border-color: #053651;
+        }
+
+        /* Loading state styles */
+        #visaContentArea {
+            min-height: 400px;
+            transition: opacity 0.3s ease;
+        }
+
+        #leftMenuContainer,
+        #tabContentContainer {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Prevent dropdown menu from staying visible */
+        .bootstrap-select.show {
+            display: block !important;
+        }
+
+        .bootstrap-select:not(.show) .dropdown-menu {
+            display: none !important;
+        }
+    </style>
 @endsection
 
 @section('scripts')
@@ -1143,6 +883,373 @@
                             });
                     }
                 });
+        }
+
+        // AJAX Country Filter Functionality
+        let currentCountryId = {{ request()->country_id ?? 'null' }};
+        let currentTab = '{{ request()->tab ?? 'factFinder' }}';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+
+            // Initialize bootstrap-select
+            if (typeof $ !== 'undefined' && typeof $.fn.selectpicker !== 'undefined') {
+                $('.selectpicker').selectpicker('refresh');
+                console.log('Bootstrap-select initialized');
+            }
+
+            // Country select change handler - Using jQuery for bootstrap-select
+            if (typeof $ !== 'undefined') {
+                // Remove any existing event handlers
+                $('#countrySelect').off('changed.bs.select');
+
+                // Attach new event handler
+                $('#countrySelect').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+                    const selectedCountryId = $(this).val();
+                    console.log('Country selected via changed.bs.select:', selectedCountryId);
+                    if (selectedCountryId && selectedCountryId !== '' && selectedCountryId !==
+                        'Search Country') {
+                        console.log('Filtering for country:', selectedCountryId);
+                        filterVisaInformation(selectedCountryId, 'factFinder');
+                    } else {
+                        console.log('Invalid country selection:', selectedCountryId);
+                    }
+                });
+
+                // Also add a regular change handler as fallback
+                $('#countrySelect').on('change', function(e) {
+                    const selectedCountryId = $(this).val();
+                    console.log('Country selected via change:', selectedCountryId);
+                    if (selectedCountryId && selectedCountryId !== '' && selectedCountryId !==
+                        'Search Country') {
+                        console.log('Filtering for country (fallback):', selectedCountryId);
+                        filterVisaInformation(selectedCountryId, 'factFinder');
+                    }
+                });
+
+                console.log('Country select event handlers attached');
+            }
+
+            // Tab click handlers (delegated event on document - works even after AJAX updates)
+            document.addEventListener('click', function(e) {
+                // Check if click is within leftMenuContainer
+                if (!e.target.closest('#leftMenuContainer')) {
+                    return; // Not in left menu, ignore
+                }
+
+                // Check if click is on a menu item or its child
+                const menuItem = e.target.closest('.list-group-item[data-tab]');
+
+                if (menuItem) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const tab = menuItem.getAttribute('data-tab');
+                    console.log('Menu item clicked, tab:', tab, 'currentCountryId:', currentCountryId);
+
+                    if (currentCountryId) {
+                        filterVisaInformation(currentCountryId, tab);
+                    } else {
+                        console.warn('No country selected yet');
+                        showToast('Please select a country first', 'warning', 2000);
+                    }
+                }
+            });
+        });
+
+        function filterVisaInformation(countryId, tab = 'factFinder') {
+            console.log('Filtering visa information for country:', countryId, 'tab:', tab);
+
+            // Show loading state immediately
+            showLoading();
+
+            // Add small delay to ensure loader is visible
+            setTimeout(() => {
+                fetch('{{ route('website.visa-information.filter') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({
+                            country_id: countryId,
+                            tab: tab
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('AJAX Response:', data);
+
+                        if (data.status) {
+                            // Hide initial instructions and show visa content area
+                            const initialInstructions = document.getElementById('initialInstructions');
+                            const visaContentArea = document.getElementById('visaContentArea');
+
+                            if (initialInstructions) {
+                                initialInstructions.style.display = 'none';
+                            }
+                            if (visaContentArea) {
+                                visaContentArea.style.display = 'flex';
+                            }
+
+                            // Update left menu
+                            const leftMenuContainer = document.getElementById('leftMenuContainer');
+                            if (leftMenuContainer) {
+                                leftMenuContainer.innerHTML = data.html.leftMenu;
+                                console.log('Left menu updated');
+                            }
+
+                            // Update tab content
+                            const tabContentContainer = document.getElementById('tabContentContainer');
+                            if (tabContentContainer) {
+                                tabContentContainer.innerHTML = data.html.tabContent;
+                                console.log('Tab content updated');
+                            }
+
+                            // Update current state
+                            currentCountryId = data.country_id;
+                            currentTab = data.tab;
+
+                            // Hide loading
+                            hideLoading();
+
+                            // Use setTimeout to ensure DOM has fully updated
+                            setTimeout(() => {
+                                // Reinitialize bootstrap components if needed
+                                reinitializeComponents();
+
+                                // Manually activate the current tab (Bootstrap classes need this)
+                                activateCurrentTab(tab);
+                            }, 100);
+
+                            // Update and refresh country selectpicker to show selected country
+                            if (typeof $ !== 'undefined' && typeof $.fn.selectpicker !== 'undefined') {
+                                try {
+                                    const $select = $('#countrySelect');
+                                    // Destroy the selectpicker instance
+                                    $select.selectpicker('destroy');
+                                    // Set the value
+                                    $select.val(countryId);
+                                    // Reinitialize selectpicker
+                                    $select.selectpicker('render');
+                                    console.log('Country selector updated to:', countryId);
+                                } catch (e) {
+                                    console.error('Error refreshing selectpicker:', e);
+                                }
+                            }
+
+                            // Optional success notification (commented out for cleaner UX)
+                            // showToast('Visa information loaded successfully', 'success', 1500);
+                        } else {
+                            hideLoading();
+                            showToast('Error loading visa information', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('AJAX Error:', error);
+                        hideLoading();
+                        showToast('Error loading visa information. Please try again.', 'error');
+                    });
+            }, 100); // Small delay to ensure loader shows
+        }
+
+        function showLoading() {
+            console.log('Showing loader...');
+
+            // Close dropdown menu if it's open (but keep the select visible)
+            if (typeof $ !== 'undefined' && $('.selectpicker').length) {
+                try {
+                    // Only close the dropdown menu, don't hide the select element
+                    $('.bootstrap-select').removeClass('open show');
+                    $('.bootstrap-select .dropdown-menu').removeClass('show');
+                    $('body').removeClass('modal-open'); // Remove body class if dropdown was open
+                } catch (e) {
+                    console.log('Error closing dropdown:', e);
+                }
+            }
+
+            // Hide initial instructions
+            const initialInstructions = document.getElementById('initialInstructions');
+            if (initialInstructions) {
+                initialInstructions.style.display = 'none';
+            }
+
+            const visaContentArea = document.getElementById('visaContentArea');
+            const leftMenu = document.getElementById('leftMenuContainer');
+            const tabContent = document.getElementById('tabContentContainer');
+
+            // Show the visa content area if hidden
+            if (visaContentArea) {
+                visaContentArea.style.display = 'flex';
+            }
+
+            // Clear and show loader in left menu
+            if (leftMenu) {
+                leftMenu.innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-danger" role="status" style="width: 2rem; height: 2rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Clear and show loader in tab content
+            if (tabContent) {
+                tabContent.innerHTML = `
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3" style="color: #003366; font-weight: 500;">Loading visa information...</p>
+                    </div>
+                `;
+            }
+        }
+
+        function hideLoading() {
+            console.log('Hiding loader...');
+            // Content is already updated by AJAX, just log
+        }
+
+        function activateCurrentTab(tabName) {
+            console.log('Activating tab:', tabName);
+
+            // Find the tab pane to activate
+            const tabPane = document.getElementById(tabName);
+
+            if (tabPane) {
+                // Remove active and show classes from all tab panes
+                document.querySelectorAll('#tabContentContainer .tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+
+                // Add active and show classes to the current tab
+                tabPane.classList.add('show', 'active');
+                console.log('Tab activated:', tabName);
+
+                // Scroll to tab content smoothly
+                setTimeout(() => {
+                    tabPane.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest'
+                    });
+                }, 100);
+            } else {
+                console.error('Tab pane not found:', tabName);
+            }
+
+            // Update menu active state
+            document.querySelectorAll('#leftMenuContainer .list-group-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-tab') === tabName) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        function reinitializeComponents() {
+            console.log('Reinitializing Bootstrap components...');
+
+            // Reinitialize Bootstrap tabs (including nested category tabs)
+            const tabElements = document.querySelectorAll('[data-bs-toggle="tab"]');
+            console.log('Found tab elements:', tabElements.length);
+            tabElements.forEach(tabEl => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+                    // Remove existing instance if any
+                    const existingTab = bootstrap.Tab.getInstance(tabEl);
+                    if (existingTab) {
+                        existingTab.dispose();
+                    }
+                    // Create new instance and enable it
+                    const tabInstance = new bootstrap.Tab(tabEl);
+
+                    // Add click event listener for nested category tabs
+                    if (tabEl.closest('.visa-category-tabs')) {
+                        tabEl.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('Category tab clicked:', tabEl.id);
+
+                            // Remove inline styles from all category tab panes before showing new one
+                            const allCategoryPanes = document.querySelectorAll(
+                                '.category-tab-content .tab-pane');
+                            allCategoryPanes.forEach(pane => {
+                                pane.style.display = '';
+                                pane.style.opacity = '';
+                                pane.classList.remove('show', 'active');
+                            });
+
+                            tabInstance.show();
+                        });
+                    }
+                }
+            });
+
+            // After reinitializing, trigger the first active category tab to show its content
+            setTimeout(() => {
+                const firstActiveCategoryTab = document.querySelector('.visa-category-tabs .nav-link.active');
+                if (firstActiveCategoryTab) {
+                    console.log('Found first active category tab:', firstActiveCategoryTab.textContent);
+                    const targetId = firstActiveCategoryTab.getAttribute('data-bs-target');
+                    console.log('Target pane ID:', targetId);
+
+                    if (targetId) {
+                        // Remove active from all category tab panes first
+                        document.querySelectorAll('.category-tab-content .tab-pane').forEach(pane => {
+                            pane.classList.remove('show', 'active');
+                        });
+
+                        const targetPane = document.querySelector(targetId);
+                        if (targetPane) {
+                            // Force the pane to be visible
+                            targetPane.classList.add('show', 'active');
+                            targetPane.style.display = 'block';
+                            targetPane.style.opacity = '1';
+                            console.log('First category tab content activated and forced visible:', targetId);
+                        } else {
+                            console.error('Target pane not found:', targetId);
+                        }
+                    }
+                } else {
+                    console.log('No active category tab found');
+                }
+            }, 50);
+
+            // Reinitialize Bootstrap collapse/accordion
+            const collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
+            console.log('Found collapse elements:', collapseElements.length);
+            collapseElements.forEach(collapseEl => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                    const existingCollapse = bootstrap.Collapse.getInstance(collapseEl);
+                    if (existingCollapse) {
+                        existingCollapse.dispose();
+                    }
+                    // Don't auto-toggle
+                    new bootstrap.Collapse(collapseEl, {
+                        toggle: false
+                    });
+                }
+            });
+
+            // Reinitialize modals
+            const modalElements = document.querySelectorAll('.modal');
+            modalElements.forEach(modalEl => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const existingModal = bootstrap.Modal.getInstance(modalEl);
+                    if (existingModal) {
+                        existingModal.dispose();
+                    }
+                    new bootstrap.Modal(modalEl);
+                }
+            });
+
+            console.log('Bootstrap components reinitialized');
         }
     </script>
 @endsection
