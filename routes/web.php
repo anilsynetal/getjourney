@@ -55,6 +55,7 @@ use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\NewsLetterController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TourPackageController;
+use App\Http\Controllers\Admin\BoatWidgetEnquiryController as AdminBoatWidgetEnquiryController;
 
 Route::group(['prefix' => 'install', 'as' => 'installer.'], function () {
     Route::get('/', [WelcomeController::class, 'welcome'])->name('welcome');
@@ -302,6 +303,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'user.auth', 'verifi
     Route::post('testimonials/get-ajax-data', [TestimonialController::class, 'getAjaxData'])->name('testimonials.get-ajax-data');
     Route::get('testimonials/{id}/status', [TestimonialController::class, 'status'])->name('testimonials.status');
     Route::resource('testimonials', TestimonialController::class);
+
+    // Boat Widget Enquiries Routes
+    Route::post('boat-widget-enquiries/get-ajax-data', [AdminBoatWidgetEnquiryController::class, 'getAjaxData'])->name('boat-widget-enquiries.get-ajax-data');
+    Route::post('boat-widget-enquiries/{id}/change-status', [AdminBoatWidgetEnquiryController::class, 'changeStatus'])->name('boat-widget-enquiries.change-status');
+    Route::post('boat-widget-enquiries/{id}/assign-user', [AdminBoatWidgetEnquiryController::class, 'assignToUser'])->name('boat-widget-enquiries.assign-user');
+    Route::post('boat-widget-enquiries/{id}/add-notes', [AdminBoatWidgetEnquiryController::class, 'addNotes'])->name('boat-widget-enquiries.add-notes');
+    Route::post('boat-widget-enquiries/{id}/respond', [AdminBoatWidgetEnquiryController::class, 'respond'])->name('boat-widget-enquiries.respond');
+    Route::get('boat-widget-enquiries/statistics', [AdminBoatWidgetEnquiryController::class, 'getStatistics'])->name('boat-widget-enquiries.statistics');
+    Route::get('boat-widget-enquiries/export', [AdminBoatWidgetEnquiryController::class, 'export'])->name('boat-widget-enquiries.export');
+    Route::resource('boat-widget-enquiries', AdminBoatWidgetEnquiryController::class);
 
     //Language Translation
     Route::get('index/{locale}', [HomeController::class, 'lang']);

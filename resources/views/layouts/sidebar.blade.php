@@ -39,16 +39,21 @@
                 $main_permissions = json_decode($menu['permissions'], true);
                 $has_permission = false;
 
-                // Check permissions (handle both single object and array of objects)
-                if (isset($main_permissions['permission'])) {
-                    // Single permission object
-                    $has_permission = auth()->user()->can($main_permissions['permission']);
-                } elseif (is_array($main_permissions)) {
-                    // Array of permissions
-                    foreach ($main_permissions as $perm) {
-                        if (auth()->user()->can($perm['permission'])) {
-                            $has_permission = true;
-                            break;
+                // Check if user is super admin - if so, show all menus
+                if (auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin')) {
+                    $has_permission = true;
+                } else {
+                    // Check permissions (handle both single object and array of objects)
+                    if (isset($main_permissions['permission'])) {
+                        // Single permission object
+                        $has_permission = auth()->user()->can($main_permissions['permission']);
+                    } elseif (is_array($main_permissions)) {
+                        // Array of permissions
+                        foreach ($main_permissions as $perm) {
+                            if (auth()->user()->can($perm['permission'])) {
+                                $has_permission = true;
+                                break;
+                            }
                         }
                     }
                 }

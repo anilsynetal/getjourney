@@ -540,6 +540,7 @@ return array(
     'EnterCount' => 'Enter Count',
     'ServiceEnquiries' => 'Service Enquiries',
     'TourEnquiries' => 'Tour Enquiries',
+    'BoatWidgetEnquiries' => 'Boat Widget Enquiries',
     'TourPackageEnquiries' => 'Tour Package Enquiries',
     'ServiceEnquiryList' => 'Service Enquiry List',
     'ManagerServiceEnquiries' => 'Manager Service Enquiries',

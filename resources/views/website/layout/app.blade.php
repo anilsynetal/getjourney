@@ -66,7 +66,7 @@
     @yield('content')
     @include('website.layout.footer')
     <!-- Back to Top -->
-    <a href="#" class="btn btn-primary btn-lg-square back-to-top"><i class="fa fa-arrow-up"></i></a>
+    {{-- <a href="#" class="btn btn-primary btn-lg-square back-to-top"><i class="fa fa-arrow-up"></i></a> --}}
 
     <!-- WhatsApp Chat -->
     <a href="https://wa.me/{{ $contact->phone ?? '1234567890' }}?text=Hello! I'm interested in your travel services."
@@ -88,6 +88,9 @@
     <script src="{{ asset('website/assets/js/main.js') }}"></script>
     <script src="{{ asset('website/assets/js/custom.js') }}"></script>
     @yield('scripts')
+
+    <!-- Boat Widget for Visa Enquiries -->
+    @include('components.boat-widget')
 </body>
 
 </html>

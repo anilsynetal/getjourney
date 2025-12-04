@@ -1589,6 +1589,32 @@ class Util
             ),
 
             array(
+                'language_key' => 'BoatWidgetEnquiries',
+                'menu_name' => 'Boat Widget Enquiries',
+                'menu_icon' => 'bx bx-ship',
+                'route_name' => 'boat-widget-enquiries.index',
+                'table_name' => 'boat_widget_enquiries',
+                'permissions' => array(
+                    array(
+                        'name' => 'View Boat Widget Enquiries',
+                        'permission' => 'boat-widget-enquiries.view'
+                    ),
+                    array(
+                        'name' => 'List',
+                        'permission' => 'boat-widget-enquiries.list'
+                    ),
+                    array(
+                        'name' => 'Delete',
+                        'permission' => 'boat-widget-enquiries.delete'
+                    ),
+                ),
+                'status' => 1,
+                'created_by' => $admin->id,
+                'created_by_ip' => request()->ip(),
+                'sub_menus' => array(),
+            ),
+
+            array(
                 'language_key' => 'AccountSettings',
                 'menu_name' => 'Account Settings',
                 'menu_icon' => 'bx bx-wrench',
